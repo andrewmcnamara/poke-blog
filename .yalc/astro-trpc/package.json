@@ -1,0 +1,38 @@
+{
+  "name": "astro-trpc",
+  "version": "0.3.1",
+  "description": "Astro tRPC - End-to-end typesafe APIs in Astro websites made easy",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf ./dist",
+    "test": "vitest",
+    "dev": "tsc --watch",
+    "prebuild": "npm run clean",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "keywords": [
+    "api-client",
+    "trpc",
+    "astro",
+    "astro-trpc"
+  ],
+  "author": "NoustaphaDev",
+  "dependencies": {
+    "@trpc/server": "^10.0.0-rc.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/MoustaphaDev/astro-trpc.git"
+  },
+  "yalcSig": "eebc51415a3620aff08f3266fcc2458b"
+}
