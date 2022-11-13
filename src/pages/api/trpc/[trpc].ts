@@ -1,48 +1,38 @@
-// import { appRouter } from 'server'
-import type { APIContext } from 'astro'
-import { resolveHTTPResponse, createHTTPHandler } from '@trpc/server/adapters/standalone'
-import type { HTTPHeaders } from '@trpc/client'
-
-import { initTRPC } from '@trpc/server';
+// [trpc].ts
+import { createAstroTRPCApiHandler } from "astro-trpc";
+import { initTRPC } from "@trpc/server";
+import { z } from "zod";
+import type { Pokemon } from "../../../lib/pokemon";
 
 const t = initTRPC.create();
 
-const appRouter = t.router({});
+// the tRPC router
+export const appRouter = t.router({
+  greeting: t.procedure
+    .input((val: unknown) => {
+      // if (typeof val === "string") return val;
+      // throw new Error(`Invalid input: ${typeof val}`);
+      return "ivysaur";
+    })
+    .query(async (req) => {
+      // console.log(`https://pokeapi.co/api/v2/pokemon/${req.input}`);
+      const input = req.input;
+      const pokemon: Pokemon = await (
+        await fetch(`https://pokeapi.co/api/v2/pokemon/${input}`)
+      ).json();
 
+      return pokemon;
+      // return {
+      //   greeting: `hello ${input ?? "world!"}`,
+      // };
+    }),
+});
 
-/**
- * Handles trpc query client requests.
- *
- * @param {APIContext} - Astro API Context
- * @returns {Promise<Response>} - trpc response
- *
- * @beta
- */
-async function httpHandler({ request, params }: APIContext): Promise<Response> {
-  const query = new URL(request.url).searchParams
+// type definition of the router
+export type AppRouter = typeof appRouter;
 
-  const requestBody = request.method === 'GET' ? {} : await request.json()
-
-  const { status, headers, ...response } = await resolveHTTPResponse({
-    async createContext() {
-      // CreateContext
-    },
-    router: appRouter,
-    path: params.trpc as string,
-    req: {
-      query,
-      method: request.method,
-      headers: request.headers as unknown as HTTPHeaders,
-      body: requestBody,
-    },
-  })
-
-  return new Response(response.body, {
-    headers: headers as HeadersInit,
-    status,
-  })
-}
-
-export const post = httpHandler
-
-export const get = httpHandler
+// API handler
+export const all = createAstroTRPCApiHandler({
+  router: appRouter,
+  createContext: () => ({}),
+});

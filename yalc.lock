@@ -1,0 +1,9 @@
+{
+  "version": "v1",
+  "packages": {
+    "astro-trpc": {
+      "signature": "eebc51415a3620aff08f3266fcc2458b",
+      "file": true
+    }
+  }
+}
